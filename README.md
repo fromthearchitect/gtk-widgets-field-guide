@@ -11,6 +11,7 @@ you're reading and `cargo run` it.
 | Folder | Post |
 |--------|------|
 | [`01-application-shell`](01-application-shell) | [The Application Shell: GtkApplicationWindow vs AdwApplicationWindow](https://fromthearchitect.dev/posts/gtk-widgets-application-shell/) |
+| [`02-list-mindset`](02-list-mindset) | Stop Thinking in Rows: GListModel and the Modern List Mindset (unpublished — draft) |
 
 ## Prerequisites
 
