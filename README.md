@@ -4,7 +4,9 @@ Companion code for [A Field Guide to GTK Widgets](https://fromthearchitect.dev/p
 
 Each post's example lives in its own numbered folder and is self-contained —
 no shared app, no shared state between posts. Clone the folder for the post
-you're reading and `cargo run` it.
+you're reading and `cargo run` it. Examples are split into modules the way a
+real app would be (data, view logic, window assembly), not dumped into one
+`main.rs`, even when they're small enough to fit in one.
 
 ## Posts
 
