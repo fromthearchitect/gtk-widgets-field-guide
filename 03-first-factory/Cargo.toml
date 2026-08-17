@@ -1,0 +1,8 @@
+[package]
+name = "first-factory"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+gtk = { package = "gtk4", version = "0.11", features = ["gnome_50"] }
+adw = { package = "libadwaita", version = "0.9", features = ["v1_9"] }
