@@ -1,7 +1,7 @@
 # Your First Factory
 
-Companion code for "Your First Factory: GtkListView and the Bind/Unbind
-Rhythm" (unpublished draft) on [fromthearchitect.dev](https://fromthearchitect.dev).
+Companion code for [Your First Factory: GtkListView and the Bind/Unbind
+Rhythm](https://fromthearchitect.dev/posts/gtk-widgets-first-factory/).
 
 A `GtkSignalListItemFactory` with all four lifecycle signals wired up.
 `bind` adds a `dim-label` CSS class to done tasks; `unbind` removes it before
