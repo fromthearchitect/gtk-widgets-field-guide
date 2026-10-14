@@ -69,3 +69,7 @@ GSettings uses the keyfile backend (`~/.config/glib-2.0/settings/keyfile` in the
 ## Series
 
 This is part of **A Field Guide to GTK Widgets** on [fromthearchitect.dev](https://fromthearchitect.dev).
+
+## Updates
+
+Changes made after a post was published are listed in [CHANGES.md](CHANGES.md).
