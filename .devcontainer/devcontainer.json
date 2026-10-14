@@ -1,0 +1,74 @@
+// Field Guide examples development environment: GNOME 50's GTK and libadwaita and
+// rustup Rust, with each post's window shown on the host's Wayland session. Built for
+// rootless Podman on an SELinux-enforcing Fedora host.
+//
+// The Makefile at the repo root runs the same image with the same flags without
+// VS Code (`make shell`, `make run POST=...`, `make check`); keep the two in step.
+{
+    "name": "gtk-widgets-field-guide",
+    "build": { "dockerfile": "Containerfile" },
+
+    "runArgs": [
+        // Rootless Podman: keep-id maps the host user onto the image's vscode user (both UID 1000).
+        "--userns=keep-id",
+
+        // The host session. Individual sockets at their host paths rather than all of
+        // $XDG_RUNTIME_DIR, which also holds the keyring, gpg-agent and ssh-agent sockets.
+        // The a11y bus is there so Orca and Accerciser can see the examples.
+        "--volume=${localEnv:XDG_RUNTIME_DIR}/${localEnv:WAYLAND_DISPLAY}:${localEnv:XDG_RUNTIME_DIR}/${localEnv:WAYLAND_DISPLAY}",
+        "--volume=${localEnv:XDG_RUNTIME_DIR}/bus:${localEnv:XDG_RUNTIME_DIR}/bus",
+        "--volume=${localEnv:XDG_RUNTIME_DIR}/at-spi:${localEnv:XDG_RUNTIME_DIR}/at-spi",
+        "--device=/dev/dri",
+
+        // SELinux: the confined container_t domain may not connect to the compositor's or
+        // the bus's socket, and no stock container type allows only that. Relabelling the
+        // sockets with :z would change the labels of live host session sockets instead.
+        // README.md, "Known limitations", has the details.
+        "--security-opt=label=disable"
+    ],
+    "containerEnv": {
+        "HOME": "/home/vscode",
+        "XDG_RUNTIME_DIR": "${localEnv:XDG_RUNTIME_DIR}",
+        "WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}",
+        "DBUS_SESSION_BUS_ADDRESS": "unix:path=${localEnv:XDG_RUNTIME_DIR}/bus"
+    },
+    "remoteUser": "vscode",
+    "containerUser": "vscode",
+    "updateRemoteUserUID": false,
+
+    // Shared relabel (z) so the container can read and write the repo. Same path as the Makefile's.
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind,z",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+    "mounts": [
+        // Downloaded crates survive image rebuilds. The toolchain is deliberately not in a
+        // volume: see RUSTUP_HOME in the Containerfile.
+        "source=gtk-field-guide-cargo-registry,target=/home/vscode/.cargo/registry,type=volume",
+        "source=gtk-field-guide-cargo-git,target=/home/vscode/.cargo/git,type=volume",
+        // The CARGO_TARGET_DIR every post shares: see the Containerfile.
+        "source=gtk-field-guide-cargo-target,target=/home/vscode/.cache/cargo-target,type=volume",
+        // The host's gh token sits in its keyring, out of reach. Run `gh auth login` once
+        // inside; the volume keeps it across rebuilds.
+        "source=gtk-field-guide-gh,target=/home/vscode/.config/gh,type=volume"
+    ],
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "rust-lang.rust-analyzer",
+                "vadimcn.vscode-lldb",
+                "tamasfe.even-better-toml",
+                "fill-labs.dependi"
+            ],
+            "settings": {
+                // There's no Cargo workspace at the root. With linkedProjects unset,
+                // rust-analyzer finds each post's Cargo.toml one level down by itself,
+                // so a new post folder needs no config.
+                "rust-analyzer.check.command": "clippy",
+                // Its own subdirectory of the shared target dir, so its background checks
+                // don't hold the build lock while `cargo run` waits on it.
+                "rust-analyzer.cargo.targetDir": true
+            }
+        }
+    }
+}

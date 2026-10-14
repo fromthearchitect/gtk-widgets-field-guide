@@ -1,0 +1,84 @@
+# Field Guide examples development environment: the native GNOME 50 GTK and
+# libadwaita, plus rustup-managed Rust.
+#
+# One image builds and runs every post's example, in a window on the host
+# Wayland session. Builds and runs with plain `podman build` / `podman run` as
+# well as VS Code; the Makefile at the repo root holds the run flags for the
+# non-VS Code case. Modelled on building-gnome-apps-with-rust-code's container.
+#
+# Fedora 44 because it ships GNOME 50: GTK 4.22 and libadwaita 1.9, which is what
+# the crate features in each post's Cargo.toml need (gtk4 `gnome_50`, libadwaita
+# `v1_9`). An older distro would fail at link time with missing symbols, not at
+# `cargo build` resolution, so the match matters.
+FROM registry.fedoraproject.org/fedora:44
+
+# What each group is for:
+#   - Tools: git and gh for the PR workflow, sudo for ad-hoc installs.
+#   - Build: gcc and pkgconf are what the -sys crates need to link GTK.
+#   - Debugging: lldb for CodeLLDB (rust-lldb pretty-printers come with rustup).
+#   - Display: fonts and the icon theme so widgets don't render as tofu or
+#     missing-icon squares; Mesa's GL and Vulkan drivers because GTK 4.22
+#     renders with Vulkan by default and falls back to GL, and without either it
+#     drops to the slow Cairo renderer. libglvnd-gles is GL's libGLESv2, which
+#     nothing else here pulls in without weak deps: on a GPU Mesa can't drive
+#     (the proprietary NVIDIA driver) GTK falls back to GL and segfaults without it.
+#
+# One dnf call so the repo metadata downloads once; openh264 is never needed and
+# its mirror is often slow enough to stall the build. No weak deps keeps out the
+# hundreds of MB that gtk4-devel would otherwise pull in.
+RUN dnf install -y --setopt=install_weak_deps=False --disablerepo=fedora-cisco-openh264 \
+        git gh openssh-clients sudo which procps-ng findutils tar make curl \
+        gcc pkgconf-pkg-config \
+        gtk4-devel libadwaita-devel \
+        lldb \
+        adwaita-sans-fonts adwaita-mono-fonts google-noto-emoji-fonts \
+        adwaita-icon-theme hicolor-icon-theme \
+        mesa-dri-drivers mesa-vulkan-drivers vulkan-loader libglvnd-gles \
+    && dnf clean all
+
+# UID 1000 so that rootless Podman's --userns=keep-id maps it onto the host user:
+# files written in the workspace stay owned by them, and the host's Wayland and
+# D-Bus sockets (mode 0700 under /run/user/1000) accept the connection.
+#
+# The cargo cache and target directories are created here so the named volumes
+# mounted over them start out owned by vscode rather than root. Likewise
+# /run/user/1000: the host's sockets are bind-mounted into it at their host
+# paths, and without this Podman would create it root-owned and 0755, which GLib
+# warns about.
+RUN useradd -m -u 1000 -s /bin/bash vscode \
+    && echo 'vscode ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/vscode \
+    && install -d -m 0700 -o vscode -g vscode /run/user/1000 \
+    && mkdir -p /home/vscode/.config/gh /home/vscode/.cargo/registry /home/vscode/.cargo/git \
+        /home/vscode/.cache/cargo-target \
+    && chown -R vscode:vscode /home/vscode/.config /home/vscode/.cargo /home/vscode/.cache \
+    && install -d -o vscode -g vscode /usr/local/rustup
+
+# Rust from rustup rather than Fedora's rust package, which lags stable by a
+# release or so, and to get rust-analyzer and rust-src from the same toolchain.
+#
+# RUSTUP_HOME is outside $HOME on purpose: the toolchain belongs to the image.
+# In a volume, it would survive rebuilds and hide whatever toolchain a rebuilt
+# image installs, which is the opposite of reproducible. CARGO_HOME stays at
+# ~/.cargo so that only its registry/ and git/ download caches go in volumes.
+#
+# CARGO_TARGET_DIR is shared by every post: they all use the same gtk4 and
+# libadwaita versions and features, so the GTK bindings compile once rather than
+# once per folder. It's a volume (see devcontainer.json), so the build cache
+# survives rebuilds and stays out of the checkout. Each post's package name is
+# different, so their binaries don't collide in it.
+ENV RUSTUP_HOME=/usr/local/rustup \
+    CARGO_TARGET_DIR=/home/vscode/.cache/cargo-target \
+    PATH=/home/vscode/.cargo/bin:$PATH
+USER vscode
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
+        | sh -s -- -y --no-modify-path --profile minimal --default-toolchain stable \
+            --component rustfmt,clippy,rust-analyzer,rust-src \
+    && rustc --version && cargo --version
+
+# The keyfile backend keeps GSettings writes in ~/.config/glib-2.0/settings inside
+# the container. With dconf (or no backend, which means the in-memory one) an
+# example would either lose its settings on exit or, over the shared session
+# bus, write them into the host user's dconf database.
+ENV GSETTINGS_BACKEND=keyfile
+
+WORKDIR /home/vscode
