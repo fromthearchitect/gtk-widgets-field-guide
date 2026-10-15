@@ -36,6 +36,10 @@ re-sort keep the selection and a filter drop it.
 cargo run
 ```
 
+Needs GTK 4.20 or newer for `watch-items`. In gtk4-rs, `set_watch_items` is
+gated behind the `v4_20` crate feature; `Cargo.toml` enables `gnome_50`, which
+includes it. Without one of them it fails to compile with a missing method.
+
 ## Series
 
 This is part of [A Field Guide to GTK Widgets](https://fromthearchitect.dev/posts/gtk-widgets-field-guide/) on [fromthearchitect.dev](https://fromthearchitect.dev).
