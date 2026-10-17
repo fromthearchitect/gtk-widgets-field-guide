@@ -12,8 +12,8 @@ real app would be (data, view logic, window assembly), not dumped into one
 
 | Folder | Post |
 |--------|------|
-| [`01-application-shell`](01-application-shell) | [The Application Shell: GtkApplicationWindow vs AdwApplicationWindow](https://fromthearchitect.dev/posts/gtk-widgets-application-shell/) |
-| [`02-list-mindset`](02-list-mindset) | [Stop Thinking in Rows: GListModel and the Modern List Mindset](https://fromthearchitect.dev/posts/gtk-widgets-list-mindset/) |
+| [`01-application-shell`](01-application-shell) | [GtkApplicationWindow vs AdwApplicationWindow: Which Window a GNOME App Should Use](https://fromthearchitect.dev/posts/gtk-widgets-application-shell/) |
+| [`02-list-mindset`](02-list-mindset) | [GListModel Explained: The Modern GTK4 List Mindset](https://fromthearchitect.dev/posts/gtk-widgets-list-mindset/) |
 | [`03-first-factory`](03-first-factory) | [Your First Factory: GtkListView and the Bind/Unbind Rhythm](https://fromthearchitect.dev/posts/gtk-widgets-first-factory/) |
 | [`04-selection`](04-selection) | [Selection, Modelled: Why GTK4 Puts Selection in the Model, Not the View](https://fromthearchitect.dev/posts/gtk-widgets-selection-modelled/) |
 | [`05-filter-sort`](05-filter-sort) | [Filtering and Sorting Without Re-querying: FilterListModel and SortListModel](https://fromthearchitect.dev/posts/gtk-widgets-filter-sort/) |

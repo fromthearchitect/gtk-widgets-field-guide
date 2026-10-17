@@ -1,6 +1,6 @@
-# Stop Thinking in Rows
+# The Modern GTK4 List Mindset
 
-Companion code for [Stop Thinking in Rows: GListModel and the Modern List Mindset](https://fromthearchitect.dev/posts/gtk-widgets-list-mindset/).
+Companion code for [GListModel Explained: The Modern GTK4 List Mindset](https://fromthearchitect.dev/posts/gtk-widgets-list-mindset/).
 
 A minimal `GListStore` + `GtkListView` + `GtkSignalListItemFactory` example.
 Three tasks are shown on launch; two seconds later a fourth is appended
