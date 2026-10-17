@@ -3,6 +3,10 @@
 Changes made after a post was published, so you know where the code here may
 differ from what the post shows. Newest first.
 
+- **2026-10-18** — READMEs use the current titles of the
+  [Application Shell](https://fromthearchitect.dev/posts/gtk-widgets-application-shell/)
+  and [list mindset](https://fromthearchitect.dev/posts/gtk-widgets-list-mindset/)
+  posts, which were retitled for search. No code change.
 - **2026-10-14** — Added `04-selection`, the companion code for
   [Selection, Modelled](https://fromthearchitect.dev/posts/gtk-widgets-selection-modelled/).
   The post (published 2026-08-25) linked to it, but the code was never

@@ -1,6 +1,6 @@
 # The Application Shell
 
-Companion code for [The Application Shell: GtkApplicationWindow vs AdwApplicationWindow](https://fromthearchitect.dev/posts/gtk-widgets-application-shell/).
+Companion code for [GtkApplicationWindow vs AdwApplicationWindow: Which Window a GNOME App Should Use](https://fromthearchitect.dev/posts/gtk-widgets-application-shell/).
 
 `AdwApplicationWindow`, `AdwHeaderBar`, and `AdwToolbarView` assembled into the
 minimal shell every GNOME app starts from.
