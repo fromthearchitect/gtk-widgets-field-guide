@@ -18,6 +18,7 @@ real app would be (data, view logic, window assembly), not dumped into one
 | [`04-selection`](04-selection) | [Selection, Modelled: Why GTK4 Puts Selection in the Model, Not the View](https://fromthearchitect.dev/posts/gtk-widgets-selection-modelled/) |
 | [`05-filter-sort`](05-filter-sort) | [Filtering and Sorting Without Re-querying: FilterListModel and SortListModel](https://fromthearchitect.dev/posts/gtk-widgets-filter-sort/) |
 | [`06-items-changed`](06-items-changed) | [Keeping a GTK4 SortListModel in Order When Items Change](https://fromthearchitect.dev/posts/gtk-widgets-items-changed/) |
+| [`07-columns-grids`](07-columns-grids) | [Sortable Columns in GTK4: ColumnView, ColumnViewSorter and GridView](https://fromthearchitect.dev/posts/gtk-widgets-columns-grids/) |
 
 ## Prerequisites
 
