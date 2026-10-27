@@ -36,7 +36,7 @@ pub fn build(app: &adw::Application) {
     let selection = gtk::MultiSelection::new(Some(sort_model));
     column_view.set_model(Some(&selection));
 
-    // The same as a user clicking Taken twice.
+    // On a fresh view, the same as a user clicking Taken twice.
     column_view.sort_by_column(Some(&taken), gtk::SortType::Descending);
 
     // The grid shares the selection model, so it shares the sort and the
