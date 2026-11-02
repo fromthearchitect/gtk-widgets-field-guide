@@ -19,6 +19,7 @@ real app would be (data, view logic, window assembly), not dumped into one
 | [`05-filter-sort`](05-filter-sort) | [Filtering and Sorting Without Re-querying: FilterListModel and SortListModel](https://fromthearchitect.dev/posts/gtk-widgets-filter-sort/) |
 | [`06-items-changed`](06-items-changed) | [Keeping a GTK4 SortListModel in Order When Items Change](https://fromthearchitect.dev/posts/gtk-widgets-items-changed/) |
 | [`07-columns-grids`](07-columns-grids) | [Sortable Columns in GTK4: ColumnView, ColumnViewSorter and GridView](https://fromthearchitect.dev/posts/gtk-widgets-columns-grids/) |
+| [`08-trees`](08-trees) | [Trees, at last: GtkTreeListModel and GtkTreeExpander](https://fromthearchitect.dev/posts/gtk-widgets-trees/) |
 
 ## Prerequisites
 
